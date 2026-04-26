@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="250" viewBox="0 0 600 250">
+  <rect width="600" height="250" fill="#081621"/>
+  <circle cx="480" cy="80" r="118" fill="#22c55e" opacity=".18"/>
+  <g transform="translate(330 50)">
+    <rect x="0" y="26" width="160" height="74" rx="18" fill="#f8fafc"/>
+    <rect x="108" y="100" width="58" height="24" rx="8" fill="#cbd5e1"/>
+    <circle cx="56" cy="63" r="28" fill="#0f172a"/>
+    <circle cx="56" cy="63" r="12" fill="#2563eb"/>
+    <path d="M136 123 L180 178" stroke="#facc15" stroke-width="10" stroke-linecap="round"/>
+  </g>
+  <text x="34" y="78" fill="#fff" font-family="Arial" font-size="34" font-weight="900">Secure Your Space</text>
+  <text x="36" y="115" fill="#bbf7d0" font-family="Arial" font-size="17" font-weight="700">CCTV camera builder with DVR/NVR support</text>
+  <rect x="36" y="152" width="142" height="40" rx="8" fill="#2563eb"/>
+  <text x="57" y="178" fill="#fff" font-family="Arial" font-size="15" font-weight="900">CC Builder</text>
+</svg>

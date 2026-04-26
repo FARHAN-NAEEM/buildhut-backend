@@ -1,0 +1,321 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+  MANAGER
+}
+
+enum ProductStatus {
+  ACTIVE
+  INACTIVE
+  DRAFT
+  ARCHIVED
+}
+
+enum CategoryStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum StockStatus {
+  IN_STOCK
+  OUT_OF_STOCK
+  UPCOMING
+  PRE_ORDER
+}
+
+enum BranchAvailabilityStatus {
+  AVAILABLE
+  OUT_OF_STOCK
+  READY_STOCK
+  PRE_ORDER
+  UPCOMING
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum BuilderType {
+  PC
+  CC_CAMERA
+}
+
+model User {
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  phone        String?  @unique
+  passwordHash String
+  role         Role     @default(CUSTOMER)
+
+  orders       Order[]
+  buildSessions BuildSession[]
+  ccBuilderSessions CcBuilderSession[]
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Category {
+  id             String         @id @default(uuid())
+  name           String
+  slug           String         @unique
+  iconUrl        String?
+  image          String?
+  level          Int            @default(0)
+  sortOrder      Int            @default(0)
+  status         CategoryStatus @default(ACTIVE)
+  isFeatured     Boolean        @default(false)
+  seoTitle       String?
+  seoDescription String?        @db.Text
+
+  parentId       String?
+  parent         Category?      @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children       Category[]     @relation("CategoryHierarchy")
+
+  products        Product[]
+  brandedProducts Product[]     @relation("ProductBrand")
+
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@map("categories")
+}
+
+model Product {
+  id                String        @id @default(uuid())
+  name              String
+  slug              String        @unique
+  sku               String        @unique
+  productBadge      String?
+  shortDescription  String?       @db.Text
+  fullDescription   String?       @db.Text
+  warranty          String?       @db.Text
+  price             Float         @default(0)
+  specialPrice      Float?
+  regularPrice      Float?
+  discountText      String?
+  emiPrice          String?
+  imageUrl          String?
+  stockStatus       StockStatus   @default(IN_STOCK)
+  totalQuantity     Int           @default(0)
+  status            ProductStatus @default(DRAFT)
+  isFeatured        Boolean       @default(false)
+  isCompareEnabled  Boolean       @default(true)
+  isWishlistEnabled Boolean       @default(true)
+  seoTitle          String?
+  seoDescription    String?       @db.Text
+
+  categoryId        String
+  category          Category      @relation(fields: [categoryId], references: [id])
+
+  brandId           String?
+  brand             Category?     @relation("ProductBrand", fields: [brandId], references: [id])
+
+  images            ProductImage[]
+  overviews         ProductOverview[]
+  specifications    ProductSpecification[]
+  branchStocks      ProductBranchStock[]
+  componentMaps     ProductComponentMap[]
+  specMeta          ProductSpecMeta[]
+  buildItems        BuildItem[]
+  ccBuildItems      CcBuilderItem[]
+  orderItems        OrderItem[]
+
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  @@map("products")
+}
+
+model ProductImage {
+  id        String  @id @default(uuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  imageUrl  String
+  sortOrder Int     @default(0)
+  isPrimary Boolean @default(false)
+
+  @@map("product_images")
+}
+
+model ProductOverview {
+  id        String  @id @default(uuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  title     String
+  value     String
+  sortOrder Int     @default(0)
+
+  @@map("product_overviews")
+}
+
+model ProductSpecification {
+  id        String  @id @default(uuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  groupName String?
+  specKey   String
+  specValue String
+  sortOrder Int     @default(0)
+
+  @@map("product_specifications")
+}
+
+model Branch {
+  id            String               @id @default(uuid())
+  name          String
+  slug          String               @unique
+  status        CategoryStatus       @default(ACTIVE)
+  sortOrder     Int                  @default(0)
+  productStocks ProductBranchStock[]
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+
+  @@map("branches")
+}
+
+model ProductBranchStock {
+  id                 String                   @id @default(uuid())
+  productId          String
+  product            Product                  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  branchId           String
+  branch             Branch                   @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  availabilityStatus BranchAvailabilityStatus @default(OUT_OF_STOCK)
+  quantity           Int                      @default(0)
+  note               String?
+
+  @@unique([productId, branchId])
+  @@map("product_branch_stocks")
+}
+
+model BuilderComponent {
+  id            String      @id @default(uuid())
+  name          String
+  slug          String
+  builderType   BuilderType
+  sortOrder     Int         @default(0)
+  isRequired    Boolean     @default(false)
+  allowMultiple Boolean     @default(false)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@unique([builderType, slug])
+  @@map("pc_builder_components")
+}
+
+model ProductComponentMap {
+  id            String      @id @default(uuid())
+  productId     String
+  product       Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  builderType   BuilderType
+  componentType String
+
+  @@unique([productId, builderType, componentType])
+  @@map("product_component_map")
+}
+
+model ProductSpecMeta {
+  id        String  @id @default(uuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  key       String
+  value     String
+
+  @@unique([productId, key])
+  @@map("product_spec_meta")
+}
+
+model BuildSession {
+  id         String      @id @default(uuid())
+  userId     String?
+  user       User?       @relation(fields: [userId], references: [id])
+  totalPrice Float       @default(0)
+  totalPower Int         @default(0)
+  shareCode  String      @unique @default(uuid())
+  items      BuildItem[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  @@map("build_sessions")
+}
+
+model BuildItem {
+  id            String       @id @default(uuid())
+  buildId       String
+  build         BuildSession @relation(fields: [buildId], references: [id], onDelete: Cascade)
+  componentType String
+  productId     String
+  product       Product      @relation(fields: [productId], references: [id])
+
+  @@map("build_items")
+}
+
+model CcBuilderSession {
+  id         String          @id @default(uuid())
+  userId     String?
+  user       User?           @relation(fields: [userId], references: [id])
+  totalPrice Float           @default(0)
+  totalPower Int             @default(0)
+  shareCode  String          @unique @default(uuid())
+  items      CcBuilderItem[]
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+
+  @@map("cc_builder_sessions")
+}
+
+model CcBuilderItem {
+  id            String           @id @default(uuid())
+  buildId       String
+  build         CcBuilderSession @relation(fields: [buildId], references: [id], onDelete: Cascade)
+  componentType String
+  productId     String
+  product       Product          @relation(fields: [productId], references: [id])
+
+  @@map("cc_builder_items")
+}
+
+model Order {
+  id          String      @id @default(uuid())
+  totalAmount Float
+  status      OrderStatus @default(PENDING)
+
+  userId      String?
+  user        User?       @relation(fields: [userId], references: [id])
+
+  orderItems  OrderItem[]
+
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id        String  @id @default(uuid())
+  quantity  Int
+  price     Float
+
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@map("order_items")
+}
