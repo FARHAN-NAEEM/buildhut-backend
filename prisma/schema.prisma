@@ -108,6 +108,7 @@ model Product {
   price             Float         @default(0)
   specialPrice      Float?
   regularPrice      Float?
+  offerPrice        Float?
   discountText      String?
   emiPrice          String?
   imageUrl          String?
@@ -115,6 +116,8 @@ model Product {
   totalQuantity     Int           @default(0)
   status            ProductStatus @default(DRAFT)
   isFeatured        Boolean       @default(false)
+  isOffer           Boolean       @default(false)
+  isNewArrival      Boolean       @default(false)
   isCompareEnabled  Boolean       @default(true)
   isWishlistEnabled Boolean       @default(true)
   seoTitle          String?

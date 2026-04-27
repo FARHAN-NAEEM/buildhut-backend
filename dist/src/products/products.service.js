@@ -66,6 +66,9 @@ const productImportHeaders = [
     'Badge',
     'Special Price',
     'Regular Price',
+    'Offer Price',
+    'Offer Enabled',
+    'New Arrival',
     'Discount Text',
     'EMI Price',
     'Stock Status',
@@ -104,14 +107,13 @@ let ProductsService = class ProductsService {
         };
     }
     async create(createProductDto) {
-        var _a, _b;
         await this.assertUnique(createProductDto.slug, createProductDto.sku);
         await this.assertCategory(createProductDto.categoryId);
         if (createProductDto.brandId)
             await this.assertCategory(createProductDto.brandId);
         const { images, overviews, specifications, branchStocks, componentMaps, specMeta } = createProductDto, productData = __rest(createProductDto, ["images", "overviews", "specifications", "branchStocks", "componentMaps", "specMeta"]);
         const primaryImage = this.resolvePrimaryImage(images);
-        const price = (_b = (_a = productData.specialPrice) !== null && _a !== void 0 ? _a : productData.regularPrice) !== null && _b !== void 0 ? _b : 0;
+        const price = this.resolveCurrentPrice(productData);
         const product = await this.prisma.product.create({
             data: Object.assign(Object.assign({}, productData), { price, imageUrl: primaryImage, images: this.createMany(images === null || images === void 0 ? void 0 : images.map((image, index) => {
                     var _a, _b;
@@ -168,6 +170,10 @@ let ProductsService = class ProductsService {
             where.stockStatus = filters.stockStatus;
         if (filters.status)
             where.status = filters.status;
+        if (filters.isOffer !== undefined)
+            where.isOffer = filters.isOffer;
+        if (filters.isNewArrival !== undefined)
+            where.isNewArrival = filters.isNewArrival;
         if (filters.minPrice !== undefined || filters.maxPrice !== undefined) {
             where.price = Object.assign(Object.assign({}, (filters.minPrice !== undefined ? { gte: filters.minPrice } : {})), (filters.maxPrice !== undefined ? { lte: filters.maxPrice } : {}));
         }
@@ -188,7 +194,6 @@ let ProductsService = class ProductsService {
         return product;
     }
     async update(id, updateProductDto) {
-        var _a, _b;
         const product = await this.findOne(id);
         if (updateProductDto.slug || updateProductDto.sku) {
             await this.assertUnique(updateProductDto.slug, updateProductDto.sku, product.id);
@@ -198,7 +203,7 @@ let ProductsService = class ProductsService {
         if (updateProductDto.brandId)
             await this.assertCategory(updateProductDto.brandId);
         const { images, overviews, specifications, branchStocks, componentMaps, specMeta } = updateProductDto, productData = __rest(updateProductDto, ["images", "overviews", "specifications", "branchStocks", "componentMaps", "specMeta"]);
-        const price = (_b = (_a = productData.specialPrice) !== null && _a !== void 0 ? _a : productData.regularPrice) !== null && _b !== void 0 ? _b : product.price;
+        const price = this.resolveCurrentPrice(productData, product.price);
         const primaryImage = images ? this.resolvePrimaryImage(images) : product.imageUrl;
         const updated = await this.prisma.$transaction(async (tx) => {
             if (images) {
@@ -293,6 +298,7 @@ let ProductsService = class ProductsService {
                 price: product.price,
                 specialPrice: product.specialPrice,
                 regularPrice: product.regularPrice,
+                offerPrice: product.offerPrice,
                 discountText: product.discountText,
                 emiPrice: product.emiPrice,
                 imageUrl: product.imageUrl,
@@ -300,6 +306,8 @@ let ProductsService = class ProductsService {
                 totalQuantity: product.totalQuantity,
                 status: 'DRAFT',
                 isFeatured: product.isFeatured,
+                isOffer: product.isOffer,
+                isNewArrival: product.isNewArrival,
                 isCompareEnabled: product.isCompareEnabled,
                 isWishlistEnabled: product.isWishlistEnabled,
                 seoTitle: product.seoTitle,
@@ -359,13 +367,19 @@ let ProductsService = class ProductsService {
             data: Object.assign({ stockStatus: stockStatus }, (totalQuantity !== undefined ? { totalQuantity } : {})),
         });
     }
+    bulkPromotions(ids, data) {
+        return this.prisma.product.updateMany({
+            where: { id: { in: ids } },
+            data: Object.assign(Object.assign(Object.assign(Object.assign({}, (data.isOffer !== undefined ? { isOffer: data.isOffer } : {})), (data.offerPrice !== undefined ? { offerPrice: data.offerPrice } : {})), (data.isOffer === true && data.offerPrice !== undefined ? { price: data.offerPrice } : {})), (data.isNewArrival !== undefined ? { isNewArrival: data.isNewArrival } : {})),
+        });
+    }
     async exportProducts(format = 'csv') {
         const products = await this.prisma.product.findMany({
             include: this.productInclude,
             orderBy: { createdAt: 'desc' },
         });
         const rows = products.map((product) => {
-            var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p;
+            var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q;
             return ({
                 'Product Name': product.name,
                 SKU: product.sku,
@@ -375,19 +389,22 @@ let ProductsService = class ProductsService {
                 Badge: (_e = product.productBadge) !== null && _e !== void 0 ? _e : '',
                 'Special Price': (_f = product.specialPrice) !== null && _f !== void 0 ? _f : '',
                 'Regular Price': (_g = product.regularPrice) !== null && _g !== void 0 ? _g : '',
-                'Discount Text': (_h = product.discountText) !== null && _h !== void 0 ? _h : '',
-                'EMI Price': (_j = product.emiPrice) !== null && _j !== void 0 ? _j : '',
+                'Offer Price': (_h = product.offerPrice) !== null && _h !== void 0 ? _h : '',
+                'Offer Enabled': product.isOffer ? 'yes' : 'no',
+                'New Arrival': product.isNewArrival ? 'yes' : 'no',
+                'Discount Text': (_j = product.discountText) !== null && _j !== void 0 ? _j : '',
+                'EMI Price': (_k = product.emiPrice) !== null && _k !== void 0 ? _k : '',
                 'Stock Status': product.stockStatus,
                 Quantity: product.totalQuantity,
                 Status: product.status,
                 Featured: product.isFeatured ? 'yes' : 'no',
                 'Compare Enabled': product.isCompareEnabled ? 'yes' : 'no',
                 'Wishlist Enabled': product.isWishlistEnabled ? 'yes' : 'no',
-                'Short Description': (_k = product.shortDescription) !== null && _k !== void 0 ? _k : '',
-                Description: (_l = product.fullDescription) !== null && _l !== void 0 ? _l : '',
-                Warranty: (_m = product.warranty) !== null && _m !== void 0 ? _m : '',
-                'SEO Title': (_o = product.seoTitle) !== null && _o !== void 0 ? _o : '',
-                'SEO Description': (_p = product.seoDescription) !== null && _p !== void 0 ? _p : '',
+                'Short Description': (_l = product.shortDescription) !== null && _l !== void 0 ? _l : '',
+                Description: (_m = product.fullDescription) !== null && _m !== void 0 ? _m : '',
+                Warranty: (_o = product.warranty) !== null && _o !== void 0 ? _o : '',
+                'SEO Title': (_p = product.seoTitle) !== null && _p !== void 0 ? _p : '',
+                'SEO Description': (_q = product.seoDescription) !== null && _q !== void 0 ? _q : '',
                 Images: product.images.map((image) => image.imageUrl).join('|'),
                 'Quick Overview': product.overviews.map((item) => `${item.title}=${item.value}`).join(';'),
                 Specifications: product.specifications.map((item) => { var _a; return `${(_a = item.groupName) !== null && _a !== void 0 ? _a : 'General'}|${item.specKey}=${item.specValue}`; }).join(';'),
@@ -410,6 +427,9 @@ let ProductsService = class ProductsService {
                 Badge: 'New Arrival',
                 'Special Price': 56500,
                 'Regular Price': 61300,
+                'Offer Price': 54500,
+                'Offer Enabled': 'yes',
+                'New Arrival': 'yes',
                 'Discount Text': 'Save Extra Tk 1,000 on online order',
                 'EMI Price': 'Tk 4,708/month',
                 'Stock Status': 'IN_STOCK',
@@ -501,6 +521,12 @@ let ProductsService = class ProductsService {
             return undefined;
         return { create: items };
     }
+    resolveCurrentPrice(productData, fallback = 0) {
+        var _a, _b;
+        if (productData.isOffer && productData.offerPrice !== undefined)
+            return productData.offerPrice;
+        return (_b = (_a = productData.specialPrice) !== null && _a !== void 0 ? _a : productData.regularPrice) !== null && _b !== void 0 ? _b : fallback;
+    }
     buildSpreadsheetFile(rows, format, filename) {
         const worksheet = XLSX.utils.json_to_sheet(rows.length ? rows : [Object.fromEntries(productImportHeaders.map((header) => [header, '']))], {
             header: productImportHeaders,
@@ -553,6 +579,9 @@ let ProductsService = class ProductsService {
             productBadge: value('Badge', 'Product Badge') || undefined,
             specialPrice: this.numberOrUndefined(value('Special Price')),
             regularPrice: this.numberOrUndefined(value('Regular Price')),
+            offerPrice: this.numberOrUndefined(value('Offer Price', 'Offer/Discount Price')),
+            isOffer: this.parseBoolean(value('Offer Enabled', 'Is Offer')),
+            isNewArrival: this.parseBoolean(value('New Arrival', 'Is New Arrival')),
             discountText: value('Discount Text') || undefined,
             emiPrice: value('EMI Price', 'Monthly Installment') || undefined,
             stockStatus: this.parseStockStatus(value('Stock Status')),

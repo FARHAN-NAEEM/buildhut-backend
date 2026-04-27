@@ -14,6 +14,9 @@ const productImportHeaders = [
   'Badge',
   'Special Price',
   'Regular Price',
+  'Offer Price',
+  'Offer Enabled',
+  'New Arrival',
   'Discount Text',
   'EMI Price',
   'Stock Status',
@@ -46,7 +49,7 @@ export class ProductsService {
 
     const { images, overviews, specifications, branchStocks, componentMaps, specMeta, ...productData } = createProductDto;
     const primaryImage = this.resolvePrimaryImage(images);
-    const price = productData.specialPrice ?? productData.regularPrice ?? 0;
+    const price = this.resolveCurrentPrice(productData);
 
     const product = await this.prisma.product.create({
       data: {
@@ -98,6 +101,8 @@ export class ProductsService {
     status?: string;
     minPrice?: number;
     maxPrice?: number;
+    isOffer?: boolean;
+    isNewArrival?: boolean;
   } = {}) {
     const where: Prisma.ProductWhereInput = {};
 
@@ -112,6 +117,8 @@ export class ProductsService {
     if (filters.brandId) where.brandId = filters.brandId;
     if (filters.stockStatus) where.stockStatus = filters.stockStatus as StockStatus;
     if (filters.status) where.status = filters.status as ProductStatus;
+    if (filters.isOffer !== undefined) where.isOffer = filters.isOffer;
+    if (filters.isNewArrival !== undefined) where.isNewArrival = filters.isNewArrival;
     if (filters.minPrice !== undefined || filters.maxPrice !== undefined) {
       where.price = {
         ...(filters.minPrice !== undefined ? { gte: filters.minPrice } : {}),
@@ -149,7 +156,7 @@ export class ProductsService {
     if (updateProductDto.brandId) await this.assertCategory(updateProductDto.brandId);
 
     const { images, overviews, specifications, branchStocks, componentMaps, specMeta, ...productData } = updateProductDto;
-    const price = productData.specialPrice ?? productData.regularPrice ?? product.price;
+    const price = this.resolveCurrentPrice(productData, product.price);
     const primaryImage = images ? this.resolvePrimaryImage(images) : product.imageUrl;
 
     const updated = await this.prisma.$transaction(async (tx) => {
@@ -251,6 +258,7 @@ export class ProductsService {
         price: product.price,
         specialPrice: product.specialPrice,
         regularPrice: product.regularPrice,
+        offerPrice: product.offerPrice,
         discountText: product.discountText,
         emiPrice: product.emiPrice,
         imageUrl: product.imageUrl,
@@ -258,6 +266,8 @@ export class ProductsService {
         totalQuantity: product.totalQuantity,
         status: 'DRAFT',
         isFeatured: product.isFeatured,
+        isOffer: product.isOffer,
+        isNewArrival: product.isNewArrival,
         isCompareEnabled: product.isCompareEnabled,
         isWishlistEnabled: product.isWishlistEnabled,
         seoTitle: product.seoTitle,
@@ -325,6 +335,18 @@ export class ProductsService {
     });
   }
 
+  bulkPromotions(ids: string[], data: { isOffer?: boolean; offerPrice?: number; isNewArrival?: boolean }) {
+    return this.prisma.product.updateMany({
+      where: { id: { in: ids } },
+      data: {
+        ...(data.isOffer !== undefined ? { isOffer: data.isOffer } : {}),
+        ...(data.offerPrice !== undefined ? { offerPrice: data.offerPrice } : {}),
+        ...(data.isOffer === true && data.offerPrice !== undefined ? { price: data.offerPrice } : {}),
+        ...(data.isNewArrival !== undefined ? { isNewArrival: data.isNewArrival } : {}),
+      },
+    });
+  }
+
   async exportProducts(format: 'csv' | 'xlsx' = 'csv') {
     const products = await this.prisma.product.findMany({
       include: this.productInclude,
@@ -340,6 +362,9 @@ export class ProductsService {
       Badge: product.productBadge ?? '',
       'Special Price': product.specialPrice ?? '',
       'Regular Price': product.regularPrice ?? '',
+      'Offer Price': product.offerPrice ?? '',
+      'Offer Enabled': product.isOffer ? 'yes' : 'no',
+      'New Arrival': product.isNewArrival ? 'yes' : 'no',
       'Discount Text': product.discountText ?? '',
       'EMI Price': product.emiPrice ?? '',
       'Stock Status': product.stockStatus,
@@ -376,6 +401,9 @@ export class ProductsService {
       Badge: 'New Arrival',
       'Special Price': 56500,
       'Regular Price': 61300,
+      'Offer Price': 54500,
+      'Offer Enabled': 'yes',
+      'New Arrival': 'yes',
       'Discount Text': 'Save Extra Tk 1,000 on online order',
       'EMI Price': 'Tk 4,708/month',
       'Stock Status': 'IN_STOCK',
@@ -472,6 +500,14 @@ export class ProductsService {
     return { create: items };
   }
 
+  private resolveCurrentPrice(
+    productData: Pick<CreateProductDto, 'specialPrice' | 'regularPrice' | 'offerPrice' | 'isOffer'>,
+    fallback = 0,
+  ) {
+    if (productData.isOffer && productData.offerPrice !== undefined) return productData.offerPrice;
+    return productData.specialPrice ?? productData.regularPrice ?? fallback;
+  }
+
   private buildSpreadsheetFile(rows: Record<string, unknown>[], format: 'csv' | 'xlsx', filename: string) {
     const worksheet = XLSX.utils.json_to_sheet(rows.length ? rows : [Object.fromEntries(productImportHeaders.map((header) => [header, '']))], {
       header: productImportHeaders,
@@ -528,6 +564,9 @@ export class ProductsService {
       productBadge: value('Badge', 'Product Badge') || undefined,
       specialPrice: this.numberOrUndefined(value('Special Price')),
       regularPrice: this.numberOrUndefined(value('Regular Price')),
+      offerPrice: this.numberOrUndefined(value('Offer Price', 'Offer/Discount Price')),
+      isOffer: this.parseBoolean(value('Offer Enabled', 'Is Offer')),
+      isNewArrival: this.parseBoolean(value('New Arrival', 'Is New Arrival')),
       discountText: value('Discount Text') || undefined,
       emiPrice: value('EMI Price', 'Monthly Installment') || undefined,
       stockStatus: this.parseStockStatus(value('Stock Status')) as StockStatus,

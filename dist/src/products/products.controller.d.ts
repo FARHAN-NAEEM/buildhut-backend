@@ -109,18 +109,21 @@ export declare class ProductsController {
             price: number;
             specialPrice: number | null;
             regularPrice: number | null;
+            offerPrice: number | null;
             discountText: string | null;
             emiPrice: string | null;
             imageUrl: string | null;
             stockStatus: import("@prisma/client").$Enums.StockStatus;
             totalQuantity: number;
+            isOffer: boolean;
+            isNewArrival: boolean;
             isCompareEnabled: boolean;
             isWishlistEnabled: boolean;
             categoryId: string;
             brandId: string | null;
         };
     }>;
-    findAll(search?: string, categoryId?: string, brandId?: string, stockStatus?: string, status?: string, minPrice?: string, maxPrice?: string): import("@prisma/client").Prisma.PrismaPromise<({
+    findAll(search?: string, categoryId?: string, brandId?: string, stockStatus?: string, status?: string, minPrice?: string, maxPrice?: string, isOffer?: string, isNewArrival?: string): import("@prisma/client").Prisma.PrismaPromise<({
         category: {
             name: string;
             id: string;
@@ -223,11 +226,14 @@ export declare class ProductsController {
         price: number;
         specialPrice: number | null;
         regularPrice: number | null;
+        offerPrice: number | null;
         discountText: string | null;
         emiPrice: string | null;
         imageUrl: string | null;
         stockStatus: import("@prisma/client").$Enums.StockStatus;
         totalQuantity: number;
+        isOffer: boolean;
+        isNewArrival: boolean;
         isCompareEnabled: boolean;
         isWishlistEnabled: boolean;
         categoryId: string;
@@ -348,11 +354,14 @@ export declare class ProductsController {
         price: number;
         specialPrice: number | null;
         regularPrice: number | null;
+        offerPrice: number | null;
         discountText: string | null;
         emiPrice: string | null;
         imageUrl: string | null;
         stockStatus: import("@prisma/client").$Enums.StockStatus;
         totalQuantity: number;
+        isOffer: boolean;
+        isNewArrival: boolean;
         isCompareEnabled: boolean;
         isWishlistEnabled: boolean;
         categoryId: string;
@@ -370,6 +379,12 @@ export declare class ProductsController {
         ids: string[];
         stockStatus: string;
         totalQuantity?: number;
+    }): import("@prisma/client").Prisma.PrismaPromise<import("@prisma/client").Prisma.BatchPayload>;
+    bulkPromotions(body: {
+        ids: string[];
+        isOffer?: boolean;
+        offerPrice?: number;
+        isNewArrival?: boolean;
     }): import("@prisma/client").Prisma.PrismaPromise<import("@prisma/client").Prisma.BatchPayload>;
     duplicate(id: string): Promise<{
         message: string;
@@ -476,11 +491,14 @@ export declare class ProductsController {
             price: number;
             specialPrice: number | null;
             regularPrice: number | null;
+            offerPrice: number | null;
             discountText: string | null;
             emiPrice: string | null;
             imageUrl: string | null;
             stockStatus: import("@prisma/client").$Enums.StockStatus;
             totalQuantity: number;
+            isOffer: boolean;
+            isNewArrival: boolean;
             isCompareEnabled: boolean;
             isWishlistEnabled: boolean;
             categoryId: string;
@@ -592,11 +610,14 @@ export declare class ProductsController {
             price: number;
             specialPrice: number | null;
             regularPrice: number | null;
+            offerPrice: number | null;
             discountText: string | null;
             emiPrice: string | null;
             imageUrl: string | null;
             stockStatus: import("@prisma/client").$Enums.StockStatus;
             totalQuantity: number;
+            isOffer: boolean;
+            isNewArrival: boolean;
             isCompareEnabled: boolean;
             isWishlistEnabled: boolean;
             categoryId: string;

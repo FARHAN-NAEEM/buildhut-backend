@@ -26,7 +26,7 @@ let ProductsController = class ProductsController {
     create(createProductDto) {
         return this.productsService.create(createProductDto);
     }
-    findAll(search, categoryId, brandId, stockStatus, status, minPrice, maxPrice) {
+    findAll(search, categoryId, brandId, stockStatus, status, minPrice, maxPrice, isOffer, isNewArrival) {
         return this.productsService.findAll({
             search,
             categoryId,
@@ -35,6 +35,8 @@ let ProductsController = class ProductsController {
             status,
             minPrice: minPrice ? Number(minPrice) : undefined,
             maxPrice: maxPrice ? Number(maxPrice) : undefined,
+            isOffer: isOffer === 'true' ? true : undefined,
+            isNewArrival: isNewArrival === 'true' ? true : undefined,
         });
     }
     async exportProducts(format = 'csv', res) {
@@ -64,6 +66,13 @@ let ProductsController = class ProductsController {
     bulkStock(body) {
         return this.productsService.bulkStock(body.ids, body.stockStatus, body.totalQuantity);
     }
+    bulkPromotions(body) {
+        return this.productsService.bulkPromotions(body.ids, {
+            isOffer: body.isOffer,
+            offerPrice: body.offerPrice,
+            isNewArrival: body.isNewArrival,
+        });
+    }
     duplicate(id) {
         return this.productsService.duplicate(id);
     }
@@ -91,8 +100,10 @@ __decorate([
     __param(4, (0, common_1.Query)('status')),
     __param(5, (0, common_1.Query)('minPrice')),
     __param(6, (0, common_1.Query)('maxPrice')),
+    __param(7, (0, common_1.Query)('isOffer')),
+    __param(8, (0, common_1.Query)('isNewArrival')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, String, String, String, String, String]),
+    __metadata("design:paramtypes", [String, String, String, String, String, String, String, String, String]),
     __metadata("design:returntype", void 0)
 ], ProductsController.prototype, "findAll", null);
 __decorate([
@@ -147,6 +158,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], ProductsController.prototype, "bulkStock", null);
+__decorate([
+    (0, common_1.Patch)('bulk/promotions'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], ProductsController.prototype, "bulkPromotions", null);
 __decorate([
     (0, common_1.Post)(':id/duplicate'),
     __param(0, (0, common_1.Param)('id')),

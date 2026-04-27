@@ -38,6 +38,7 @@ export declare class CreateProductDto {
     productBadge?: string;
     specialPrice?: number;
     regularPrice?: number;
+    offerPrice?: number;
     discountText?: string;
     emiPrice?: string;
     shortDescription?: string;
@@ -47,6 +48,8 @@ export declare class CreateProductDto {
     totalQuantity?: number;
     status?: ProductStatus;
     isFeatured?: boolean;
+    isOffer?: boolean;
+    isNewArrival?: boolean;
     isCompareEnabled?: boolean;
     isWishlistEnabled?: boolean;
     seoTitle?: string;

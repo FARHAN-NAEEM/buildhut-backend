@@ -132,6 +132,11 @@ export class CreateProductDto {
   regularPrice?: number;
 
   @IsOptional()
+  @IsNumber()
+  @Min(0)
+  offerPrice?: number;
+
+  @IsOptional()
   @IsString()
   discountText?: string;
 
@@ -167,6 +172,14 @@ export class CreateProductDto {
   @IsOptional()
   @IsBoolean()
   isFeatured?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  isOffer?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  isNewArrival?: boolean;
 
   @IsOptional()
   @IsBoolean()

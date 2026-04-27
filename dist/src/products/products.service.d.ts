@@ -110,11 +110,14 @@ export declare class ProductsService {
             price: number;
             specialPrice: number | null;
             regularPrice: number | null;
+            offerPrice: number | null;
             discountText: string | null;
             emiPrice: string | null;
             imageUrl: string | null;
             stockStatus: import("@prisma/client").$Enums.StockStatus;
             totalQuantity: number;
+            isOffer: boolean;
+            isNewArrival: boolean;
             isCompareEnabled: boolean;
             isWishlistEnabled: boolean;
             categoryId: string;
@@ -129,6 +132,8 @@ export declare class ProductsService {
         status?: string;
         minPrice?: number;
         maxPrice?: number;
+        isOffer?: boolean;
+        isNewArrival?: boolean;
     }): Prisma.PrismaPromise<({
         category: {
             name: string;
@@ -232,11 +237,14 @@ export declare class ProductsService {
         price: number;
         specialPrice: number | null;
         regularPrice: number | null;
+        offerPrice: number | null;
         discountText: string | null;
         emiPrice: string | null;
         imageUrl: string | null;
         stockStatus: import("@prisma/client").$Enums.StockStatus;
         totalQuantity: number;
+        isOffer: boolean;
+        isNewArrival: boolean;
         isCompareEnabled: boolean;
         isWishlistEnabled: boolean;
         categoryId: string;
@@ -345,11 +353,14 @@ export declare class ProductsService {
         price: number;
         specialPrice: number | null;
         regularPrice: number | null;
+        offerPrice: number | null;
         discountText: string | null;
         emiPrice: string | null;
         imageUrl: string | null;
         stockStatus: import("@prisma/client").$Enums.StockStatus;
         totalQuantity: number;
+        isOffer: boolean;
+        isNewArrival: boolean;
         isCompareEnabled: boolean;
         isWishlistEnabled: boolean;
         categoryId: string;
@@ -460,11 +471,14 @@ export declare class ProductsService {
             price: number;
             specialPrice: number | null;
             regularPrice: number | null;
+            offerPrice: number | null;
             discountText: string | null;
             emiPrice: string | null;
             imageUrl: string | null;
             stockStatus: import("@prisma/client").$Enums.StockStatus;
             totalQuantity: number;
+            isOffer: boolean;
+            isNewArrival: boolean;
             isCompareEnabled: boolean;
             isWishlistEnabled: boolean;
             categoryId: string;
@@ -579,11 +593,14 @@ export declare class ProductsService {
             price: number;
             specialPrice: number | null;
             regularPrice: number | null;
+            offerPrice: number | null;
             discountText: string | null;
             emiPrice: string | null;
             imageUrl: string | null;
             stockStatus: import("@prisma/client").$Enums.StockStatus;
             totalQuantity: number;
+            isOffer: boolean;
+            isNewArrival: boolean;
             isCompareEnabled: boolean;
             isWishlistEnabled: boolean;
             categoryId: string;
@@ -593,6 +610,11 @@ export declare class ProductsService {
     bulkStatus(ids: string[], status: string): Prisma.PrismaPromise<Prisma.BatchPayload>;
     bulkCategory(ids: string[], categoryId: string): Prisma.PrismaPromise<Prisma.BatchPayload>;
     bulkStock(ids: string[], stockStatus: string, totalQuantity?: number): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    bulkPromotions(ids: string[], data: {
+        isOffer?: boolean;
+        offerPrice?: number;
+        isNewArrival?: boolean;
+    }): Prisma.PrismaPromise<Prisma.BatchPayload>;
     exportProducts(format?: 'csv' | 'xlsx'): Promise<{
         buffer: Buffer;
         filename: string;
@@ -617,6 +639,7 @@ export declare class ProductsService {
     private assertCategory;
     private resolvePrimaryImage;
     private createMany;
+    private resolveCurrentPrice;
     private buildSpreadsheetFile;
     private mapImportRow;
     private normalizeHeader;

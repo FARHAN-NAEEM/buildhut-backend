@@ -172,11 +172,14 @@ export declare class CategoriesController {
             price: number;
             specialPrice: number | null;
             regularPrice: number | null;
+            offerPrice: number | null;
             discountText: string | null;
             emiPrice: string | null;
             imageUrl: string | null;
             stockStatus: import("@prisma/client").$Enums.StockStatus;
             totalQuantity: number;
+            isOffer: boolean;
+            isNewArrival: boolean;
             isCompareEnabled: boolean;
             isWishlistEnabled: boolean;
             categoryId: string;

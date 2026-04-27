@@ -23,6 +23,8 @@ export class ProductsController {
     @Query('status') status?: string,
     @Query('minPrice') minPrice?: string,
     @Query('maxPrice') maxPrice?: string,
+    @Query('isOffer') isOffer?: string,
+    @Query('isNewArrival') isNewArrival?: string,
   ) {
     return this.productsService.findAll({
       search,
@@ -32,6 +34,8 @@ export class ProductsController {
       status,
       minPrice: minPrice ? Number(minPrice) : undefined,
       maxPrice: maxPrice ? Number(maxPrice) : undefined,
+      isOffer: isOffer === 'true' ? true : undefined,
+      isNewArrival: isNewArrival === 'true' ? true : undefined,
     });
   }
 
@@ -75,6 +79,15 @@ export class ProductsController {
   @Patch('bulk/stock')
   bulkStock(@Body() body: { ids: string[]; stockStatus: string; totalQuantity?: number }) {
     return this.productsService.bulkStock(body.ids, body.stockStatus, body.totalQuantity);
+  }
+
+  @Patch('bulk/promotions')
+  bulkPromotions(@Body() body: { ids: string[]; isOffer?: boolean; offerPrice?: number; isNewArrival?: boolean }) {
+    return this.productsService.bulkPromotions(body.ids, {
+      isOffer: body.isOffer,
+      offerPrice: body.offerPrice,
+      isNewArrival: body.isNewArrival,
+    });
   }
 
   @Post(':id/duplicate')

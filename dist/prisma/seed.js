@@ -123,9 +123,20 @@ const demoProducts = [
     { name: 'Analog Bullet CC Camera', sku: 'DEMO-SECURITY-ANALOG-CAM', categorySlug: 'security-cc-camera', image: '/uploads/demo/cctv.svg', shortDescription: 'Analog bullet camera for CCTV systems', componentType: 'camera', meta: { camera_type: 'Analog', resolution: '2MP', power_type: '12V', power_watt: '7' } },
     { name: '4 Channel DVR Recorder', sku: 'DEMO-SECURITY-DVR', categorySlug: 'security-dvr', image: '/uploads/demo/cctv.svg', shortDescription: '4 channel DVR for analog CCTV setup', componentType: 'recorder', meta: { recorder_type: 'Analog', channel_support: '4 Channel', storage_support: 'SATA', power_watt: '14' } },
     { name: 'Smart Door Bell Camera', sku: 'DEMO-SECURITY-DOORBELL', categorySlug: 'security-home-security-smart-door-bell', image: '/uploads/demo/cctv.svg', shortDescription: 'Smart door bell with camera and mobile alerts', componentType: 'camera', meta: { camera_type: 'IP', resolution: '2MP', power_type: 'Battery', power_watt: '4' } },
-    { name: 'WiFi 6 Network Router', sku: 'DEMO-NETWORK-ROUTER', categorySlug: 'network-network-router', image: '/uploads/demo/accessory.svg', shortDescription: 'Dual-band WiFi 6 router for gaming and streaming', componentType: 'router', meta: { power_watt: '12' } },
-    { name: 'Gigabit Network Switch', sku: 'DEMO-NETWORK-SWITCH', categorySlug: 'network-network-switch', image: '/uploads/demo/accessory.svg', shortDescription: 'Gigabit switch for office and camera networks', componentType: 'other-component', meta: { power_watt: '18' } },
-    { name: 'USB WiFi Adapter', sku: 'DEMO-NETWORK-WIFI', categorySlug: 'network-wifi-adapter', image: '/uploads/demo/accessory.svg', shortDescription: 'Compact WiFi adapter for desktops', componentType: 'other-component', meta: { power_watt: '2' } },
+    { name: 'BuildHut Brand Desktop PC', sku: 'DEMO-DESKTOP-BRAND-PC', categorySlug: 'desktop-and-server-desktop-pc-brand-desktop-pc', image: '/uploads/demo/desktop.svg', shortDescription: 'Ready-to-use branded desktop PC for office and study', componentType: 'other-component', meta: { power_watt: '180' } },
+    { name: 'BuildHut All In One PC', sku: 'DEMO-DESKTOP-AIO-PC', categorySlug: 'desktop-and-server-desktop-pc-all-in-one-pc', image: '/uploads/demo/desktop.svg', shortDescription: 'Slim all-in-one desktop PC with built-in display', componentType: 'other-component', meta: { power_watt: '120' } },
+    { name: 'BuildHut Mini PC', sku: 'DEMO-DESKTOP-MINI-PC', categorySlug: 'desktop-and-server-desktop-pc-mini-pc', image: '/uploads/demo/desktop.svg', shortDescription: 'Compact mini PC for home, office and POS work', componentType: 'other-component', meta: { power_watt: '65' } },
+    { name: 'BuildHut Custom Desktop PC', sku: 'DEMO-DESKTOP-CUSTOM-PC', categorySlug: 'desktop-and-server-desktop-pc-ryans-pc', image: '/uploads/demo/desktop.svg', shortDescription: 'Custom desktop PC with builder-ready component support', componentType: 'other-component', meta: { power_watt: '260' } },
+    { name: 'AI Workstation Desktop PC', sku: 'DEMO-DESKTOP-AI-WORKSTATION', categorySlug: 'desktop-and-server-desktop-pc-ai-workstation-pc', image: '/uploads/demo/desktop.svg', shortDescription: 'AI workstation desktop PC for graphics and productivity', componentType: 'other-component', meta: { power_watt: '420' } },
+    { name: 'WiFi 6 Network Router', sku: 'DEMO-NETWORK-ROUTER', categorySlug: 'network-network-router', image: '/uploads/demo/network.svg', shortDescription: 'Dual-band WiFi 6 router for gaming and streaming', componentType: 'router', meta: { power_watt: '12' } },
+    { name: 'Gigabit Network Switch', sku: 'DEMO-NETWORK-SWITCH', categorySlug: 'network-network-switch', image: '/uploads/demo/network.svg', shortDescription: 'Gigabit switch for office and camera networks', componentType: 'other-component', meta: { power_watt: '18' } },
+    { name: 'USB WiFi Adapter', sku: 'DEMO-NETWORK-WIFI', categorySlug: 'network-wifi-adapter', image: '/uploads/demo/network.svg', shortDescription: 'Compact WiFi adapter for desktops', componentType: 'other-component', meta: { power_watt: '2' } },
+    { name: 'Dual Band Access Point', sku: 'DEMO-NETWORK-ACCESS-POINT', categorySlug: 'network-access-point', image: '/uploads/demo/network.svg', shortDescription: 'Ceiling mount access point for stable office WiFi', componentType: 'router', meta: { power_watt: '14' } },
+    { name: 'Mesh Range Extender', sku: 'DEMO-NETWORK-RANGE-EXTENDER', categorySlug: 'network-range-extender', image: '/uploads/demo/network.svg', shortDescription: 'Wireless range extender for better home coverage', componentType: 'router', meta: { power_watt: '8' } },
+    { name: 'PCIe Gigabit LAN Card', sku: 'DEMO-NETWORK-LAN-CARD', categorySlug: 'network-lan-card', image: '/uploads/demo/network.svg', shortDescription: 'Gigabit LAN card for desktop network upgrades', componentType: 'other-component', meta: { power_watt: '3' } },
+    { name: 'Outdoor Cat6 Network Cable', sku: 'DEMO-NETWORK-CAT6-CABLE', categorySlug: 'network-network-cable', image: '/uploads/demo/network.svg', shortDescription: 'Outdoor Cat6 cable for router and CCTV installation', componentType: 'cable', meta: { cable_type: 'IP/Cat6', power_watt: '0' } },
+    { name: 'Rack Mount Patch Panel', sku: 'DEMO-NETWORK-PATCH-PANEL', categorySlug: 'network-network-accessories-patch-panel', image: '/uploads/demo/network.svg', shortDescription: 'Patch panel for structured network cabling', componentType: 'connector', meta: { power_watt: '0' } },
+    { name: 'STARLINK Standard Internet Kit', sku: 'DEMO-NETWORK-STARLINK-KIT', categorySlug: 'network-satellite-internet-starlink', image: '/uploads/demo/network.svg', shortDescription: 'Satellite internet kit for high speed connectivity', componentType: 'router', meta: { power_watt: '75' } },
     { name: 'Bluetooth Speaker', sku: 'DEMO-SOUND-SPEAKER', categorySlug: 'sound-speaker', image: '/uploads/demo/accessory.svg', shortDescription: 'Portable Bluetooth speaker with deep bass', componentType: 'other-component', meta: { power_watt: '15' } },
     { name: 'Studio Microphone', sku: 'DEMO-SOUND-MIC', categorySlug: 'sound-microphone', image: '/uploads/demo/accessory.svg', shortDescription: 'USB studio microphone for streaming', componentType: 'other-component', meta: { power_watt: '5' } },
     { name: 'Wireless Earbuds', sku: 'DEMO-SOUND-EARBUDS', categorySlug: 'sound-earbuds', image: '/uploads/demo/accessory.svg', shortDescription: 'Premium wireless earbuds with low latency', componentType: 'other-component', meta: { power_watt: '2' } },
@@ -138,7 +149,7 @@ const demoProducts = [
 ];
 async function upsertDemoProducts() {
     var _a, _b, _c;
-    for (const product of demoProducts) {
+    for (const [index, product] of demoProducts.entries()) {
         const category = await prisma.category.findUnique({ where: { slug: product.categorySlug } });
         if (!category) {
             console.warn(`Skipping ${product.name}: missing category ${product.categorySlug}`);
@@ -146,6 +157,11 @@ async function upsertDemoProducts() {
         }
         const isCcComponent = ['camera', 'recorder', 'storage', 'power-source', 'connector', 'cable', 'display', 'router'].includes((_a = product.componentType) !== null && _a !== void 0 ? _a : '');
         const builderType = isCcComponent ? 'CC_CAMERA' : 'PC';
+        const isOffer = index % 2 === 0;
+        const isNewArrival = index % 3 === 0;
+        const productBadge = isNewArrival ? 'New Arrival' : isOffer ? 'Offer' : 'Featured';
+        const regularPrice = isOffer ? 15 : 10;
+        const offerPrice = isOffer ? 10 : null;
         await prisma.product.upsert({
             where: { sku: product.sku },
             create: {
@@ -153,14 +169,17 @@ async function upsertDemoProducts() {
                 sku: product.sku,
                 slug: slugify(product.name),
                 categoryId: category.id,
-                productBadge: 'Featured',
-                price: 10,
-                specialPrice: 10,
-                regularPrice: 10,
+                productBadge,
+                price: offerPrice !== null && offerPrice !== void 0 ? offerPrice : 10,
+                specialPrice: offerPrice !== null && offerPrice !== void 0 ? offerPrice : 10,
+                regularPrice,
+                offerPrice,
                 stockStatus: 'IN_STOCK',
                 totalQuantity: 50,
                 status: 'ACTIVE',
                 isFeatured: true,
+                isOffer,
+                isNewArrival,
                 isCompareEnabled: true,
                 isWishlistEnabled: true,
                 shortDescription: product.shortDescription,
@@ -181,14 +200,17 @@ async function upsertDemoProducts() {
             update: {
                 name: product.name,
                 categoryId: category.id,
-                productBadge: 'Featured',
-                price: 10,
-                specialPrice: 10,
-                regularPrice: 10,
+                productBadge,
+                price: offerPrice !== null && offerPrice !== void 0 ? offerPrice : 10,
+                specialPrice: offerPrice !== null && offerPrice !== void 0 ? offerPrice : 10,
+                regularPrice,
+                offerPrice,
                 stockStatus: 'IN_STOCK',
                 totalQuantity: 50,
                 status: 'ACTIVE',
                 isFeatured: true,
+                isOffer,
+                isNewArrival,
                 isCompareEnabled: true,
                 isWishlistEnabled: true,
                 shortDescription: product.shortDescription,
@@ -211,6 +233,10 @@ async function upsertDemoProducts() {
     }
 }
 const inferDemoVisual = (slug) => {
+    if (slug.includes('desktop-pc'))
+        return '/uploads/demo/desktop.svg';
+    if (slug.includes('network') || slug.includes('router') || slug.includes('access-point') || slug.includes('range-extender') || slug.includes('lan-card'))
+        return '/uploads/demo/network.svg';
     if (slug.includes('laptop') || slug.includes('tablet'))
         return '/uploads/demo/laptop.svg';
     if (slug.includes('processor'))
@@ -302,6 +328,11 @@ async function upsertBulkDemoProducts() {
         const builder = inferBuilder(category.slug);
         const productName = `${category.name} Premium Demo Product ${number}`;
         const shortDescription = `${category.name} premium BuildHut demo item with active stock and Tk 10 testing price.`;
+        const isOffer = index % 4 === 0;
+        const isNewArrival = index % 5 === 0;
+        const productBadge = isNewArrival ? 'New Arrival' : isOffer ? 'Offer' : 'Featured';
+        const regularPrice = isOffer ? 16 : 10;
+        const offerPrice = isOffer ? 10 : null;
         await prisma.product.upsert({
             where: { sku },
             create: {
@@ -309,14 +340,17 @@ async function upsertBulkDemoProducts() {
                 sku,
                 slug: `bulk-${category.slug}-${number}`,
                 categoryId: category.id,
-                productBadge: index % 3 === 0 ? 'New Arrival' : index % 3 === 1 ? 'Discount' : 'Featured',
-                price: 10,
-                specialPrice: 10,
-                regularPrice: 10,
+                productBadge,
+                price: offerPrice !== null && offerPrice !== void 0 ? offerPrice : 10,
+                specialPrice: offerPrice !== null && offerPrice !== void 0 ? offerPrice : 10,
+                regularPrice,
+                offerPrice,
                 stockStatus: 'IN_STOCK',
                 totalQuantity: 100,
                 status: 'ACTIVE',
                 isFeatured: true,
+                isOffer,
+                isNewArrival,
                 isCompareEnabled: true,
                 isWishlistEnabled: true,
                 shortDescription,
@@ -337,13 +371,17 @@ async function upsertBulkDemoProducts() {
             update: {
                 name: productName,
                 categoryId: category.id,
-                price: 10,
-                specialPrice: 10,
-                regularPrice: 10,
+                productBadge,
+                price: offerPrice !== null && offerPrice !== void 0 ? offerPrice : 10,
+                specialPrice: offerPrice !== null && offerPrice !== void 0 ? offerPrice : 10,
+                regularPrice,
+                offerPrice,
                 stockStatus: 'IN_STOCK',
                 totalQuantity: 100,
                 status: 'ACTIVE',
                 isFeatured: true,
+                isOffer,
+                isNewArrival,
                 isCompareEnabled: true,
                 isWishlistEnabled: true,
                 shortDescription,
